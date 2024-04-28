@@ -16,10 +16,10 @@ def pascal_triangle(n):
     - list of lists: A list containing lists representing each row of Pascal's Triangle.
     """
     triangle = []
-    for i in range(n):
-        row = [1] * (i + 1)
-        if i > 1:
-            for j in range(1, i):
-                row[j] = triangle[i - 1][j - 1] + triangle[i - 1][j]
+    for i in range(1, n + 1):
+        row = [1] * i
+        for j in range(2, i):
+            row[j - 1] = triangle[i - 2][j - 2] + triangle[i - 2][j - 1]
         triangle.append(row)
     return triangle
+
