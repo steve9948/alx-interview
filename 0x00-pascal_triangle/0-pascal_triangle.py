@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-
-"""
-Pascal's triangle
-"""
+"""Pascal's triangle solution."""
 
 
 def pascal_triangle(n):
