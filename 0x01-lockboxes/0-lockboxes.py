@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-
 from collections import deque
-
-
 """lock_boxes."""
+
+
 def can_unlock_all(boxes):
     """ Set to keep track of visited boxes"""
     visited = set()
