@@ -1,25 +1,16 @@
-#!/usr/bin/env python3
-from collections import deque
-"""lock_boxes."""
+#!/usr/bin/python3
+"""0-lockboxes."""
 
 
-def can_unlock_all(boxes):
-    """ Set to keep track of visited boxes"""
-    visited = set()
-    visited.add(0)  # Start with the first box unlocked
-
-    # Queue to manage boxes whose keys have been found but not yet explored
-    queue = deque([0])
-
-    # BFS to explore all reachable boxes
-    while queue:
-        current_box = queue.popleft()
-
-        # Explore keys in the current box
-        for key in boxes[current_box]:
-            if key < len(boxes) and key not in visited:
-                visited.add(key)
-                queue.append(key)
-
-    # Check if all boxes have been visited
-    return len(visited) == len(boxes)
+def canUnlockAll(boxes):
+    """Checking if a box is opened or can be opened."""
+    unlocked = [0]
+    for box_id, box in enumerate(boxes):
+        if not box:
+            continue
+        for key in box:
+            if key < len(boxes) and key not in unlocked and key != box_id:
+                unlocked.append(key)
+    if len(unlocked) == len(boxes):
+        return True
+    return False
