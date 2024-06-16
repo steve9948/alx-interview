@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 This module provides a function to rotate a given n x n 2D matrix
 90 degrees clockwise in place.
