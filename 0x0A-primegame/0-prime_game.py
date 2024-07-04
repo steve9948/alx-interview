@@ -12,6 +12,7 @@ def primes(n):
                 sieve[multiple] = False
     return [num for num in range(2, n + 1) if sieve[num]]
 
+
 def isWinner(x, nums):
     """
     Determines the winner of Prime Game
