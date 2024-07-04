@@ -2,7 +2,7 @@
 """0. Prime Game"""
 
 
-def primes(n):
+def generatePrimeNumbers(limit):
     """
     Return a list of prime numbers between 1 and n inclusive.
 
@@ -12,21 +12,22 @@ def primes(n):
     Returns:
         list: A list of prime numbers between 1 and n inclusive.
     """
-    sieve = [True] * (n + 1)
-    sieve[0] = sieve[1] = False
-    for p in range(2, int(n**0.5) + 1):
-        if sieve[p]:
-            for multiple in range(p*p, n + 1, p):
-                sieve[multiple] = False
-    return [num for num in range(2, n + 1) if sieve[num]]
+    primeNumbers = []
+    sieveList = [True] * (limit + 1)
+    for potentialPrime in range(2, limit + 1):
+        if sieveList[potentialPrime]:
+            primeNumbers.append(potentialPrime)
+            for multiple in range(potentialPrime, limit + 1, potentialPrime):
+                sieveList[multiple] = False
+    return primeNumbers
 
 
-def isWinner(x, nums):
+def isWinner(numRounds, roundValues):
     """
     Determines the overall winner of the Prime Game after x rounds.
 
     Args:
-        x (int): The number of rounds to be played.
+        i (int): The number of rounds to be played.
         nums (list): A list of integers where each integer represents the upper
                      limit of the range of numbers for that round.
 
@@ -34,21 +35,17 @@ def isWinner(x, nums):
         str: The name of the player with the most wins ('Maria' or 'Ben').
              Returns None if there is a tie or if the input is invalid.
     """
-    if x < 1 or not nums:
+    if not numRounds or not roundValues:
         return None
-
-    maria_wins = 0
-    ben_wins = 0
-
-    for n in nums:
-        prime_count = len(primes(n))
-        if prime_count % 2 == 0:
-            ben_wins += 1
+    mariaScore = benScore = 0
+    for i in range(numRounds):
+        primes = generatePrimeNumbers(roundValues[i])
+        if len(primes) % 2 == 0:
+            benScore += 1
         else:
-            maria_wins += 1
-
-    if maria_wins > ben_wins:
+            mariaScore += 1
+    if mariaScore > benScore:
         return "Maria"
-    elif ben_wins > maria_wins:
+    elif benScore > mariaScore:
         return "Ben"
     return None
