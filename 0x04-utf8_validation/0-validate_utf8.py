@@ -2,37 +2,55 @@
 """UTF8 validation."""
 
 
+def is_continuation(byte):
+    """
+    Check if the byte is a valid continuation byte.
+
+    A continuation byte in UTF-8 starts with the bits '10'.
+    """
+    return (byte & 0b11000000) == 0b10000000
+
+
+def get_num_bytes(byte):
+    """
+    Determine the number of bytes in the current UTF-8 character.
+
+    The number of leading '1' bits in the first byte determines
+    the number of bytes.
+    """
+    if (byte & 0b10000000) == 0b00000000:
+        return 1
+    elif (byte & 0b11100000) == 0b11000000:
+        return 2
+    elif (byte & 0b11110000) == 0b11100000:
+        return 3
+    elif (byte & 0b11111000) == 0b11110000:
+        return 4
+    else:
+        return -1
+
+
 def validUTF8(data):
-    # Number of bytes in the current UTF-8 character
-    num_bytes = 0
+    """
+    Validate if a given list of integers represents a valid UTF-8 encoding.
 
-    # Masks to check the leading bits of the first byte
-    masks = [0b10000000, 0b11100000, 0b11110000, 0b11111000]
-    # Masks to validate the pattern of leading bits
-    patterns = [0b00000000, 0b11000000, 0b11100000, 0b11110000]
-    # Masks to validate continuation bytes
-    continuation_mask = 0b11000000
-    continuation_pattern = 0b10000000
+    Args:
+        data (List[int]): List of integers representing bytes.
 
-    for byte in data:
-        # Get the 8 least significant bits of the byte
-        byte = byte & 0b11111111
+    Returns:
+        bool: True if data is valid UTF-8, False otherwise.
+    """
+    i = 0
+    while i < len(data):
+        num_bytes = get_num_bytes(data[i])
+        if num_bytes == -1:
+            return False
 
-        if num_bytes == 0:
-            # Determine the number of bytes in the UTF-8 character
-            for i in range(4):
-                if (byte & masks[i]) == patterns[i]:
-                    num_bytes = i if i != 0 else 1
-                    break
-            else:
-                return False
-        else:
-            # Check if the byte is a valid continuation byte
-            if (byte & continuation_mask) != continuation_pattern:
+        # Check if the subsequent bytes are valid continuation bytes.
+        for j in range(i + 1, i + num_bytes):
+            if j >= len(data) or not is_continuation(data[j]):
                 return False
 
-        # If this byte is part of a multi-byte character, decrement the count
-        num_bytes -= 1
+        i += num_bytes
 
-    # If num_bytes is not zero, then we have an incomplete multi-byte character
-    return num_bytes == 0
+    return True
